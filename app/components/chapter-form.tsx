@@ -46,16 +46,12 @@ export function ChapterForm({
 	const updateChapterMutation = useUpdateChapterByChapterNumberMutation()
 	const createNewChapterMutation = useCreateNewChapterMutation()
 
-	useEffect(() => {
-		handleFormat()
-	}, [chapter?.content, replaceRules])
-
 	const navigate = useNavigate()
 
 	const handleFormat = () => {
 		const rules = replaceRules
 			.split('\n')
-			.map(line => line.trim())
+			.map((line) => line.trim())
 			.filter(Boolean)
 
 		if (rules.length === 0) {
@@ -170,7 +166,7 @@ export function ChapterForm({
 							min={1}
 							required
 							value={chapterNumber}
-							onChange={e => setChapterNumber(e.target.value)}
+							onChange={(e) => setChapterNumber(e.target.value)}
 						/>
 					</div>
 
@@ -181,7 +177,7 @@ export function ChapterForm({
 							required
 							autoFocus
 							value={title}
-							onChange={e => setTitle(e.target.value)}
+							onChange={(e) => setTitle(e.target.value)}
 						/>
 					</div>
 				</div>
@@ -193,7 +189,7 @@ export function ChapterForm({
 						id='content'
 						required
 						value={content}
-						onChange={e => setContent(e.target.value)}
+						onChange={(e) => setContent(e.target.value)}
 						rows={20}
 						className='max-h-dvh font-serif md:text-xl leading-relaxed'
 						placeholder='Paste or write the chapter text here. Separate paragraphs with a blank line.'
@@ -268,7 +264,7 @@ export function ChapterForm({
 
 					<RadioGroup
 						value={formatMode}
-						onValueChange={value => setFormatMode(value as 'text' | 'regex')}
+						onValueChange={(value) => setFormatMode(value as 'text' | 'regex')}
 						className='grid-cols-2 gap-2'
 					>
 						<label className='flex cursor-pointer items-center gap-2 rounded-md border p-3 text-sm has-checked:border-primary has-checked:bg-primary/5'>
@@ -289,14 +285,14 @@ export function ChapterForm({
 
 					<Textarea
 						value={replaceRules}
-						onChange={e => setReplaceRules(e.target.value)}
+						onChange={(e) => setReplaceRules(e.target.value)}
 						rows={10}
 						placeholder={`\\s+, => ,
 \\s+\\. => .
 \\s+\\? => ?
 \\s+! => !
 \\n{3,} => \\n\\n`}
-						onKeyDown={e => {
+						onKeyDown={(e) => {
 							if (e.ctrlKey && e.key === 'Enter') {
 								e.preventDefault()
 								handleFormat()
