@@ -24,6 +24,8 @@ export const links: Route.LinksFunction = () => [
 		rel: 'icon',
 		href: '/favicon.svg',
 	},
+	{ rel: 'manifest', href: '/manifest.webmanifest' },
+	{ rel: 'apple-touch-icon', href: '/icon-192.png' },
 ]
 
 const client = new QueryClient()
@@ -60,6 +62,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
 					name='viewport'
 					content='width=device-width, initial-scale=1'
 				/>
+				<meta
+					name='theme-color'
+					content='#2052cb'
+				/>
 				<title>Inkwell — A Quiet Place to Read</title>
 				<meta
 					name='description'
@@ -85,6 +91,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+	useEffect(() => {
+		if ('serviceWorker' in navigator) {
+			navigator.serviceWorker.register('/sw.js').catch(() => {})
+		}
+	}, [])
+
 	return <Outlet />
 }
 

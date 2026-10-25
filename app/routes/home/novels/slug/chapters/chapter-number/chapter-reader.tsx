@@ -68,7 +68,7 @@ export function ChapterReader({
 	const [speechProgress, setSpeechProgress] = useState(0)
 	const [fontSize, setFontSize] = useState(18)
 
-	const session = useAuthStore((state) => state.session)
+	const session = useAuthStore(state => state.session)
 
 	// Load font size from localStorage on mount
 	useEffect(() => {
@@ -100,7 +100,7 @@ export function ChapterReader({
 	const paragraphBoundaries = useMemo(() => {
 		let offset = 0
 
-		return paragraphs.map((text) => {
+		return paragraphs.map(text => {
 			const start = offset
 
 			offset += text.length + 2
@@ -194,7 +194,7 @@ export function ChapterReader({
 
 		const voices = speechSynthesis.getVoices()
 
-		const vietnameseVoice = voices.find((voice) => voice.lang === 'vi-VN' && voice.name.includes('Google Tiếng Việt'))
+		const vietnameseVoice = voices.find(voice => voice.lang === 'vi-VN' && voice.name.includes('Google Tiếng Việt'))
 
 		if (vietnameseVoice) {
 			utterance.voice = vietnameseVoice
@@ -216,10 +216,10 @@ export function ChapterReader({
 			setActiveParagraph(-1)
 		}
 
-		utterance.onboundary = (event) => {
+		utterance.onboundary = event => {
 			const charIndex = event.charIndex
 
-			const paragraphIndex = paragraphBoundaries.findIndex((p) => charIndex >= p.start && charIndex < p.end)
+			const paragraphIndex = paragraphBoundaries.findIndex(p => charIndex >= p.start && charIndex < p.end)
 
 			if (paragraphIndex === -1) return
 
@@ -282,7 +282,7 @@ export function ChapterReader({
 
 			const newChapters = data as unknown as Mini[]
 
-			setChapters((previous) => [...newChapters, ...previous])
+			setChapters(previous => [...newChapters, ...previous])
 
 			setMinChapterNumber(startChapter)
 			setHasPrevious(startChapter > 1)
@@ -320,7 +320,7 @@ export function ChapterReader({
 			if (error) throw new Error('Failed to load chapters')
 			const newChapters = data as unknown as Mini[]
 
-			setChapters((previous) => [...previous, ...newChapters])
+			setChapters(previous => [...previous, ...newChapters])
 			setMaxChapterNumber(endChapter)
 			setHasMore(newChapters.length >= NUMBER_OF_LOADING_CHAPTERS)
 
@@ -470,7 +470,7 @@ export function ChapterReader({
 
 							<select
 								value={speechRate}
-								onChange={(e) => {
+								onChange={e => {
 									const rate = Number(e.target.value)
 									setSpeechRate(rate)
 								}}
@@ -552,8 +552,8 @@ export function ChapterReader({
 										type='number'
 										placeholder='Jump to...'
 										value={jumpInput}
-										onChange={(e) => setJumpInput(e.target.value)}
-										onKeyDown={(e) => {
+										onChange={e => setJumpInput(e.target.value)}
+										onKeyDown={e => {
 											if (e.key === 'Enter') {
 												handleJumpToChapter()
 											}
@@ -591,7 +591,7 @@ export function ChapterReader({
 									className='h-full overflow-y-auto'
 								>
 									<ol className='divide-y divide-border'>
-										{chapters.map((c) => {
+										{chapters.map(c => {
 											const active = c.chapter_number === chapter.chapter_number
 											return (
 												<li key={c.chapter_number}>
@@ -783,10 +783,10 @@ export function ChapterReader({
 				{paragraphs.map((para, i) => (
 					<p
 						key={i}
-						ref={(el) => {
+						ref={el => {
 							paragraphRefs.current[i] = el
 						}}
-						className={`select-none
+						className={`select-none whitespace-pre-wrap
 							${activeParagraph === i ? 'rounded text-blue-500 transition-colors' : ''}
 						`}
 						style={{ fontSize: `${fontSize}px`, lineHeight: 1.8 }}
