@@ -38,6 +38,7 @@ export function ChapterForm({
 
 	const [title, setTitle] = useState(chapter?.title ?? '')
 	const [content, setContent] = useState(chapter?.content ?? '')
+	const [selectedCharacters, setSelectedCharacters] = useState(0)
 
 	const [formatOpen, setFormatOpen] = useState(false)
 	const [replaceRules, setReplaceRules] = useState(RULES)
@@ -51,7 +52,7 @@ export function ChapterForm({
 	const handleFormat = () => {
 		const rules = replaceRules
 			.split('\n')
-			.map((line) => line.trim())
+			.map(line => line.trim())
 			.filter(Boolean)
 
 		if (rules.length === 0) {
@@ -99,6 +100,7 @@ export function ChapterForm({
 		}
 
 		setContent(result)
+		setSelectedCharacters(0)
 
 		if (invalidRules > 0) {
 			toast.warning(`Đã áp dụng ${rules.length - invalidRules}/${rules.length} quy tắc (${totalReplaced} lần thay thế)`)
@@ -166,7 +168,7 @@ export function ChapterForm({
 							min={1}
 							required
 							value={chapterNumber}
-							onChange={(e) => setChapterNumber(e.target.value)}
+							onChange={e => setChapterNumber(e.target.value)}
 						/>
 					</div>
 
@@ -176,8 +178,9 @@ export function ChapterForm({
 							id='title'
 							required
 							autoFocus
+							placeholder='Enter chapter title'
 							value={title}
-							onChange={(e) => setTitle(e.target.value)}
+							onChange={e => setTitle(e.target.value)}
 						/>
 					</div>
 				</div>
@@ -189,15 +192,25 @@ export function ChapterForm({
 						id='content'
 						required
 						value={content}
-						onChange={(e) => setContent(e.target.value)}
+						onChange={e => {
+							setContent(e.target.value)
+							setSelectedCharacters(e.currentTarget.selectionEnd - e.currentTarget.selectionStart)
+						}}
+						onSelect={e => setSelectedCharacters(e.currentTarget.selectionEnd - e.currentTarget.selectionStart)}
 						rows={20}
 						className='max-h-dvh font-serif md:text-xl leading-relaxed'
 						placeholder='Paste or write the chapter text here. Separate paragraphs with a blank line.'
 					/>
 
-					<p className='text-xs text-muted-foreground'>
-						Separate paragraphs with a blank line — they will be rendered as separate paragraphs.
-					</p>
+					<div className='flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-xs text-muted-foreground'>
+						<p>Separate paragraphs with a blank line — they will be rendered as separate paragraphs.</p>
+						<p
+							aria-live='polite'
+							className='shrink-0 tabular-nums'
+						>
+							{content.length.toLocaleString()} characters · {selectedCharacters.toLocaleString()} selected
+						</p>
+					</div>
 				</div>
 
 				<div className='flex justify-end gap-2'>
@@ -264,7 +277,7 @@ export function ChapterForm({
 
 					<RadioGroup
 						value={formatMode}
-						onValueChange={(value) => setFormatMode(value as 'text' | 'regex')}
+						onValueChange={value => setFormatMode(value as 'text' | 'regex')}
 						className='grid-cols-2 gap-2'
 					>
 						<label className='flex cursor-pointer items-center gap-2 rounded-md border p-3 text-sm has-checked:border-primary has-checked:bg-primary/5'>
@@ -285,14 +298,14 @@ export function ChapterForm({
 
 					<Textarea
 						value={replaceRules}
-						onChange={(e) => setReplaceRules(e.target.value)}
+						onChange={e => setReplaceRules(e.target.value)}
 						rows={10}
 						placeholder={`\\s+, => ,
 \\s+\\. => .
 \\s+\\? => ?
 \\s+! => !
 \\n{3,} => \\n\\n`}
-						onKeyDown={(e) => {
+						onKeyDown={e => {
 							if (e.ctrlKey && e.key === 'Enter') {
 								e.preventDefault()
 								handleFormat()
